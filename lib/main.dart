@@ -20,44 +20,16 @@ class DocumentScannerState extends State<DocumentScanner> {
   File? _scannedDocumentFile;
   File? _scannedImage;
 
-  Future<void> _openPdfScanner(BuildContext context) async {
-    File? doc = await DocumentScannerFlutter.launchForPdf(
-      context,
-      labelsConfig: {
-        ScannerLabelsConfig.ANDROID_NEXT_BUTTON_LABEL: "Next Steps",
-        ScannerLabelsConfig.PDF_GALLERY_FILLED_TITLE_SINGLE: "Only 1 Page",
-        ScannerLabelsConfig.PDF_GALLERY_FILLED_TITLE_MULTIPLE:
-            "Only {PAGES_COUNT} Page"
-      },
-    );
-    if (doc != null) {
-      _scannedDocument = null;
-      setState(() {});
-      await Future.delayed(const Duration(milliseconds: 100));
-      _scannedDocumentFile = doc;
-      _scannedDocument = await PDFDocument.fromFile(doc);
-      setState(() {});
-    }
-  }
-
-  Future<void> _openImageScanner(BuildContext context) async {
-    File? image = await DocumentScannerFlutter.launch(
-      context,
-      labelsConfig: {
-        ScannerLabelsConfig.ANDROID_NEXT_BUTTON_LABEL: "Next Step",
-        ScannerLabelsConfig.ANDROID_OK_LABEL: "OK"
-      },
-    );
-    if (image != null) {
-      _scannedImage = image;
-      setState(() {});
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.deepOrange,
+          accentColor: Colors.deepOrangeAccent,
+        ),
+      ),
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -120,5 +92,39 @@ class DocumentScannerState extends State<DocumentScanner> {
         ),
       ),
     );
+  }
+
+  Future<void> _openImageScanner(BuildContext context) async {
+    File? image = await DocumentScannerFlutter.launch(
+      context,
+      labelsConfig: {
+        ScannerLabelsConfig.ANDROID_NEXT_BUTTON_LABEL: "Next Step",
+        ScannerLabelsConfig.ANDROID_OK_LABEL: "OK"
+      },
+    );
+    if (image != null) {
+      _scannedImage = image;
+      setState(() {});
+    }
+  }
+
+  Future<void> _openPdfScanner(BuildContext context) async {
+    File? doc = await DocumentScannerFlutter.launchForPdf(
+      context,
+      labelsConfig: {
+        ScannerLabelsConfig.ANDROID_NEXT_BUTTON_LABEL: "Next Steps",
+        ScannerLabelsConfig.PDF_GALLERY_FILLED_TITLE_SINGLE: "Only 1 Page",
+        ScannerLabelsConfig.PDF_GALLERY_FILLED_TITLE_MULTIPLE:
+            "Only {PAGES_COUNT} Page"
+      },
+    );
+    if (doc != null) {
+      _scannedDocument = null;
+      setState(() {});
+      await Future.delayed(const Duration(milliseconds: 100));
+      _scannedDocumentFile = doc;
+      _scannedDocument = await PDFDocument.fromFile(doc);
+      setState(() {});
+    }
   }
 }
